@@ -18,11 +18,6 @@ LIB_DIRECTORY = (Path(__file__).parent / ".." / ".." / ".." / ".." / "lib").reso
 REVEALJS_DIST = LIB_DIRECTORY / "reveal.js" / "dist"
 
 
-def builder_inited(app: "Sphinx") -> None:
-    # app.config.html_theme_options["revealjs_theme"] = "solarized.css"
-    pass
-
-
 def exclude_unused_theme_files(theme_name: str) -> List[str]:
     """Exclude theme files that don't match the configured theme."""
 

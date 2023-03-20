@@ -13,10 +13,6 @@ data_attributes = {
 }
 
 
-def depth(node: nodes.Element) -> int:
-    return node.attributes.get("depth", 0)
-
-
 def new_slide(html_writer: HTML5Translator, node: nodes.Element) -> str:
     return html_writer.starttag(
         node,
