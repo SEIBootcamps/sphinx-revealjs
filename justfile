@@ -2,7 +2,7 @@ build: (_sphinx "sphinx-build" "revealjs" "example" "example" join("example", "_
 
 _sphinx cmd builder config source output *opts:
   @echo "Using {{cmd}} to build {{source}}"
-  poetry run {{cmd}} \
+  {{cmd}} \
     -b {{builder}} \
     -d {{output}}/doctrees \
     -n \
