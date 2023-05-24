@@ -19,14 +19,16 @@
   {%- block sidebar2 %}{% endblock sidebar2 %}
   {%- block relbar2 %}{% endblock relbar2 %}
   {%- block footer %}{% endblock footer %}
-  <script>
-    (() => {
-      Reveal.initialize({
-        slideNumber: "c/t",
-        showSlideNumber: "print",
-        hashOneBasedIndex: true,
-        hash: true
-      });
-    })();
-  </script>
+  {%- block initRevealjs %}
+    <script>
+      (() => {
+        Reveal.initialize({
+          slideNumber: "c/t",
+          showSlideNumber: "print",
+          hashOneBasedIndex: true,
+          hash: true
+        });
+      })();
+    </script>
+  {%- endblock initRevealjs %}
 {%- endblock content %}

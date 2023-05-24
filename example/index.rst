@@ -15,6 +15,30 @@ Another Slide
 
 Hi
 
+More content
+
+.. newslide:: Override title
+
+Yet another slide
+
+.. incr:: item
+
+   - One
+
+   - Two
+
+   - Three
+
+Another Section
+===============
+
+Wow this is another section
+
+Subsection title
+----------------
+
+Whee
+
 =====
 Index
 =====

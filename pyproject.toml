@@ -1,21 +1,19 @@
 [tool.poetry]
-name = "sei-sphinxext-revealjs"
+name = "sphinx-revealjs"
 version = "0.1.0"
 description = ""
 authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
 readme = "README.md"
-packages = [{include = "sei", from = "src"}]
+packages = [{ include = "sphinx_revealjs", from = "src" }]
 include = ["lib/reveal.js/dist", "lib/reveal.js/plugin"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 sphinx = "^6.1.3"
 
-
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.1.1"
 black = "^23.1.0"
-
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.2"
