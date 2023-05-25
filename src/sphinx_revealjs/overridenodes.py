@@ -1,6 +1,6 @@
 """sei.sphinxext.revealjs.overridenodes"""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from docutils import nodes
 from sphinx.writers.html5 import HTML5Translator
@@ -25,7 +25,7 @@ def new_slide(html_writer: HTML5Translator, node: nodes.Element) -> str:
     )
 
 
-def visit_skipnode(self, node: nodes.Node) -> None:
+def visit_skipnode(self, *args: Any) -> None:
     raise nodes.SkipNode
 
 
