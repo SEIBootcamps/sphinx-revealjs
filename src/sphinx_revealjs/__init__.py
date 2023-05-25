@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING, Any
 import importlib.metadata
 from pathlib import Path
-from sphinx.util.fileutil import copy_asset_file
+from typing import TYPE_CHECKING, Any
 
-from . import builder, overridenodes, directives
+from sphinx.util.osutil import copyfile
+
+from . import builder, directives, overridenodes
 
 if TYPE_CHECKING:
     from sphinx.application import Sphinx
@@ -46,7 +47,9 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
         ]
 
         for f in revealjs_files:
-            copy_asset_file(str(REVEALJS_DIST / f), str(staticdir))
+            source = REVEALJS_DIST / f
+            dest = staticdir / Path(f).name
+            copyfile(str(source), str(dest))
 
 
 def setup(app: "Sphinx") -> dict[str, Any]:
