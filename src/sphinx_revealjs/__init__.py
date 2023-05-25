@@ -8,12 +8,13 @@ from . import builder, directives, overridenodes
 
 if TYPE_CHECKING:
     from sphinx.application import Sphinx
+    from sphinx.config import Config
 
 __name__ = "sphinx_revealjs"
 __version__ = importlib.metadata.version(__name__)
 
 THEMES_DIRECTORY = (Path(__file__).parent / "themes").resolve()
-LIB_DIRECTORY = (Path(__file__).parent / ".." / "lib").resolve()
+LIB_DIRECTORY = (Path(__file__).parent / ".." / ".." / "lib").resolve()
 REVEALJS_DIST = LIB_DIRECTORY / "reveal.js" / "dist"
 
 
@@ -35,6 +36,11 @@ def override_nodes(app: "Sphinx") -> None:
     overridenodes.setup(app)
 
 
+def override_html_config(app: "Sphinx", config: "Config") -> None:
+    app.config.html_theme = config.revealjs_html_theme  # type: ignore
+    app.config.html_theme_options = config.revealjs_html_theme_options  # type: ignore
+
+
 def copy_revealjs_files(app: "Sphinx", exc) -> None:
     if app.builder.name == "revealjs" and not exc:
         staticdir = (Path(app.builder.outdir) / "_static").resolve()
@@ -54,8 +60,11 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
 
 def setup(app: "Sphinx") -> dict[str, Any]:
     app.add_config_value("revealjs_theme", "white.css", "html")
+    app.add_config_value("revealjs_html_theme", "revealjs", "html")
+    app.add_config_value("revealjs_html_theme_options", {}, "html")
     app.add_html_theme("revealjs", str(THEMES_DIRECTORY / "revealjs"))
     app.add_builder(builder.RevealjsBuilder)
+    app.connect("config-inited", override_html_config)
     app.connect("builder-inited", init_builder)
     app.connect("build-finished", copy_revealjs_files)
 
