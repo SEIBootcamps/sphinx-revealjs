@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-revealjs"
-version = "0.1.1"
+version = "0.2.1"
 description = ""
 authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
 readme = "README.md"
