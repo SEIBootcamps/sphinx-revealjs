@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 __name__ = "sphinx_revealjs"
 __version__ = importlib.metadata.version(__name__)
 
-THEMES_DIRECTORY = (Path(__file__).parent / "themes").resolve()
-LIB_DIRECTORY = (Path(__file__).parent / ".." / ".." / "lib").resolve()
-REVEALJS_DIST = LIB_DIRECTORY / "reveal.js" / "dist"
+package_dir = Path(__file__).parent.resolve()
+themes_dir = package_dir / "themes"
+revealjs_dir = themes_dir / "lib" / "reveal.js"
 
 
 def init_builder(app: "Sphinx") -> None:
@@ -53,7 +53,7 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
         ]
 
         for f in revealjs_files:
-            source = REVEALJS_DIST / f
+            source = revealjs_dir / "dist" / f
             dest = staticdir / Path(f).name
             copyfile(str(source), str(dest))
 
@@ -62,7 +62,7 @@ def setup(app: "Sphinx") -> dict[str, Any]:
     app.add_config_value("revealjs_theme", "white.css", "html")
     app.add_config_value("revealjs_html_theme", "revealjs", "html")
     app.add_config_value("revealjs_html_theme_options", {}, "html")
-    app.add_html_theme("revealjs", str(THEMES_DIRECTORY / "revealjs"))
+    app.add_html_theme("revealjs", str(themes_dir / "revealjs"))
     app.add_builder(builder.RevealjsBuilder)
     app.connect("config-inited", override_html_config)
     app.connect("builder-inited", init_builder)
