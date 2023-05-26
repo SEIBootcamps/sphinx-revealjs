@@ -45,7 +45,7 @@ Index
 
 This should appear.
 
-.. admonition:: Should not appear
+.. note:: Should not appear
 
   This shouldn't appear.
 
