@@ -1,4 +1,4 @@
-build: (_sphinx "sphinx-build" "revealjs" "example" "example" join("example", "_build"))
+build *opts: (_sphinx "sphinx-build" "revealjs" "example" "example" join("example", "_build") opts)
 
 _sphinx cmd builder config source output *opts:
   @echo "Using {{cmd}} to build {{source}}"
