@@ -37,8 +37,9 @@ def override_nodes(app: "Sphinx") -> None:
 
 
 def override_html_config(app: "Sphinx", config: "Config") -> None:
-    app.config.html_theme = config.revealjs_html_theme  # type: ignore
-    app.config.html_theme_options = config.revealjs_html_theme_options  # type: ignore
+    if app.builder.name == "revealjs":
+        app.config.html_theme = config.revealjs_html_theme  # type: ignore
+        app.config.html_theme_options = config.revealjs_html_theme_options  # type: ignore
 
 
 def copy_revealjs_files(app: "Sphinx", exc) -> None:
