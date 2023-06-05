@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sphinx-revealjs"
+name = "sphinx-revealjs-slides"
 version = "0.2.3"
 description = ""
 authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
