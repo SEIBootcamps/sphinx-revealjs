@@ -1,1 +1,1 @@
-# sphinx-revealjs
+# sphinx-revealjs-slides
