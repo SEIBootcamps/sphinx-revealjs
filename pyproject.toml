@@ -5,10 +5,10 @@ description = ""
 authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
 readme = "README.md"
 packages = [{ include = "sphinx_revealjs_slides", from = "src" }]
-exclude = ["src/sphinx_revealjs/themes/lib/reveal.js/*"]
+exclude = ["src/sphinx_revealjs_slides/themes/lib/reveal.js/*"]
 include = [
-  "src/sphinx_revealjs/themes/lib/reveal.js/dist",
-  "src/sphinx_revealjs/themes/lib/reveal.js/plugin"
+  "src/sphinx_revealjs_slides/themes/lib/reveal.js/dist",
+  "src/sphinx_revealjs_slides/themes/lib/reveal.js/plugin"
 ]
 
 [tool.poetry.dependencies]

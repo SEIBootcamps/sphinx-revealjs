@@ -1,4 +1,4 @@
-extensions = ["sphinx_revealjs"]
+extensions = ["sphinx_revealjs_slides"]
 html_sidebars = {"**": []}
 exclude_patterns = ["_build"]
 html_theme = "alabaster"
