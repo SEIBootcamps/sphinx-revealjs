@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-revealjs-slides"
-version = "0.2.6"
+version = "0.2.7"
 description = ""
 authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
 readme = "README.md"
@@ -13,7 +13,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4.0"
-sphinx = ">=6, <8"
+sphinx = ">=6, <7"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.1.1"
