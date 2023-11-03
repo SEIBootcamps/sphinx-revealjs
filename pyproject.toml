@@ -13,7 +13,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4.0"
-sphinx = ">=6, <7"
+sphinx = ">=6, <8"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.1.1"
@@ -21,6 +21,11 @@ black = "^23.1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.2"
+
+[tool.poetry.group.buildlocal]
+optional = true
+
+[tool.poetry.group.buildlocal.dependencies]
 
 [build-system]
 requires = ["poetry-core"]
