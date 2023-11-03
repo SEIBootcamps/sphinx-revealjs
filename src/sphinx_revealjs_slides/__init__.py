@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from sphinx.util.osutil import copyfile
+from sphinx.util import logging
 
 from . import builder, directives, overridenodes
 
@@ -16,6 +17,8 @@ __version__ = importlib.metadata.version(__name__)
 package_dir = Path(__file__).parent.resolve()
 themes_dir = package_dir / "themes"
 revealjs_dir = themes_dir / "lib" / "reveal.js"
+
+logger = logging.getLogger(__name__)
 
 
 def init_builder(app: "Sphinx") -> None:
@@ -50,7 +53,10 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
         for f in revealjs_files:
             source = revealjs_dir / "dist" / f
             dest = staticdir / Path(f).name
-            copyfile(str(source), str(dest))
+            try:
+                copyfile(str(source), str(dest))
+            except OSError:
+                logger.warn(f"Cannot copy file {source} to {dest}")
 
 
 def setup(app: "Sphinx") -> dict[str, Any]:

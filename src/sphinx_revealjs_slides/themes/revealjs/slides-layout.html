@@ -1,34 +1,75 @@
-{%- extends "basic/layout.html" %}
+{# code: language=jinja-html #}
 
-{%- block css %}
-  {{ super() }}
-{%- endblock css %}
+<!DOCTYPE html>
+<html lang="en" {% block html_extra_attrs %}{% endblock html_extra_attrs %}>
+  <head>
+    {%- block afterbegin_head %}
+    {%- endblock afterbegin_head %}
 
-{%- block linktags %}{% endblock linktags %}
+    {%- block head %}
 
-{%- block scripts %}
-  {{ super() }}
-{%- endblock scripts %}
+      {%- for url in html_preconnect %}
+        <link rel="preconnect" href="{{ url }}" crossorigin>
+      {%- endfor %}
 
-{%- block relbar1 %}{% endblock relbar1 %}
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-{%- block sidebar1 %}{% endblock sidebar1 %}
+      {%- block extra_meta %}
+      {%- endblock extra_meta %}
 
-{%- block content %}
-  {% block body %}{% endblock body %}
-  {%- block sidebar2 %}{% endblock sidebar2 %}
-  {%- block relbar2 %}{% endblock relbar2 %}
-  {%- block footer %}{% endblock footer %}
-  {%- block initRevealjs %}
-    <script>
-      (() => {
-        Reveal.initialize({
-          slideNumber: "c/t",
-          showSlideNumber: "print",
-          hashOneBasedIndex: true,
-          hash: true
-        });
-      })();
-    </script>
-  {%- endblock initRevealjs %}
-{%- endblock content %}
+      <title>
+        {%- block title %}
+          {%- block title_prefix %}{{ title }}{% endblock title_prefix %}
+          {%- block title_separator %} | {% endblock title_separator %}
+          {%- block title_suffix %}{{ docstitle|e }}{% endblock title_suffix %}
+        {%- endblock title %}
+      </title>
+
+      {# CSS files, added via the Application API (app.add_css_file) or Sphinx config (html_css_files) #}
+      {%- block styles %}
+        {%- for css in css_files %}
+          {%- if css|attr("filename") %}
+            {{ css_tag(css) }}
+          {%- else %}
+            <link rel="stylesheet" href="{{ pathto(css, 1)|e }}" type="text/css" />
+          {%- endif %}
+        {%- endfor %}
+      {%- endblock styles %}
+
+      {# JS files, added via Application API (app.add_js_file) or Sphinx config (html_js_files) #}
+      {%- block scripts %}
+        {%- for js in script_files %}
+          {{ js_tag(js) }}
+        {%- endfor %}
+      {%- endblock scripts %}
+    {%- endblock head %}
+
+    {%- block beforeend_head %}
+    {%- endblock beforeend_head %}
+  </head>
+  <body>
+    {%- block afterbegin_body %}
+    {%- endblock afterbegin_body %}
+
+    {%- block body %}
+      {% block document %} {% endblock document %}
+    {%- endblock body %}
+
+    {%- block initRevealjs %}
+      <script>
+        (() => {
+          Reveal.initialize({
+            slideNumber: "c/t",
+            showSlideNumber: "print",
+            hashOneBasedIndex: true,
+            hash: true
+          });
+        })();
+      </script>
+    {%- endblock initRevealjs %}
+
+    {%- block beforeend_body %}
+    {%- endblock beforeend_body %}
+  </body>
+</html>
