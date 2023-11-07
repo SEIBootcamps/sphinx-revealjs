@@ -62,6 +62,10 @@ Heading 2
 
 A paragraph.
 
+.. interslide::
+
+   Hello
+
 Heading 3
 ---------
 
