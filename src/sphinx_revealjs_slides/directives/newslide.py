@@ -1,4 +1,4 @@
-"""sphinxext.revealjs.directives.newslide
+"""sphinx_revealjs_slides.directives.newslide
 
 Use this to create a new slide. Content will resume after a slide break.
 

@@ -71,6 +71,7 @@ def setup(app: "Sphinx") -> dict[str, Any]:
     directives.incremental.setup(app)
     directives.speakernote.setup(app)
     directives.newslide.setup(app)
+    directives.interslide.setup(app)
 
     return {
         "version": __version__,
