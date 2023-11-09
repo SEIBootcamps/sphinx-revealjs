@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from sphinx.builders.html import StandaloneHTMLBuilder
 
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Optional
 
 
 class RevealjsBuilder(StandaloneHTMLBuilder):
@@ -20,7 +20,7 @@ class RevealjsBuilder(StandaloneHTMLBuilder):
         pagename: str,
         addctx: dict,
         templatename: str = "slides.html",
-        outfilename: str | None = None,
+        outfilename: "Optional[str]" = None,
         event_arg: "Any" = None,
     ) -> None:
         super().handle_page(pagename, addctx, templatename, outfilename, event_arg)
