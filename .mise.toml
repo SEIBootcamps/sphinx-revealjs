@@ -1,0 +1,5 @@
+[tools]
+python = "3.12"
+
+[tasks."submodule:update"]
+run = "git submodule update --init --recursive --remote"
