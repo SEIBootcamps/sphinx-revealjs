@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from sphinx.application import Sphinx
     from sphinx.config import Config
 
-__name__ = "sphinx_revealjs_slides"
+__name__ = "sphinx_revealjs_slides"  # pylint: disable=redefined-builtin
 __version__ = importlib.metadata.version(__name__)
 
 package_dir = Path(__file__).parent.resolve()
@@ -56,7 +56,7 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
             try:
                 copyfile(str(source), str(dest))
             except OSError:
-                logger.warn(f"Cannot copy file {source} to {dest}")
+                logger.warning(f"Cannot copy file {source} to {dest}")
 
 
 def setup(app: "Sphinx") -> dict[str, Any]:
