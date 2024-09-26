@@ -2,23 +2,21 @@ import importlib.metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from sphinx.util.osutil import copyfile
+from sphinx.util.osutil import copyfile, ensuredir
 from sphinx.util import logging
 
-from . import builder, directives, overridenodes
+from . import builder, directives, overridenodes, revealjs_plugins
+from ._utils import get_revealjs_source_dir
 
 if TYPE_CHECKING:
     from sphinx.application import Sphinx
-    from sphinx.config import Config
 
 __name__ = "sphinx_revealjs_slides"  # pylint: disable=redefined-builtin
 __version__ = importlib.metadata.version(__name__)
 
-package_dir = Path(__file__).parent.resolve()
-themes_dir = package_dir / "themes"
-revealjs_dir = themes_dir / "lib" / "reveal.js"
-
 logger = logging.getLogger(__name__)
+
+revealjs_dir = get_revealjs_source_dir()
 
 
 def init_builder(app: "Sphinx") -> None:
@@ -30,8 +28,6 @@ def init_builder(app: "Sphinx") -> None:
 def add_revealjs_static_files(app: "Sphinx") -> None:
     app.add_css_file("reset.css", priority=500)
     app.add_css_file("reveal.css", priority=500)
-    app.add_js_file("reveal.js", priority=500)
-    app.add_js_file("reveal.js.map", priority=500)
     app.add_css_file(app.config.revealjs_theme, priority=600)
 
 
@@ -41,30 +37,51 @@ def override_nodes(app: "Sphinx") -> None:
 
 def copy_revealjs_files(app: "Sphinx", exc) -> None:
     if app.builder.name == "revealjs" and not exc:
-        staticdir = (Path(app.builder.outdir) / "_static").resolve()
-        revealjs_files = [
-            "reset.css",
-            "reveal.css",
-            "reveal.js",
-            "reveal.js.map",
-            Path("theme") / app.config.revealjs_theme,
-        ]
 
-        for f in revealjs_files:
-            source = revealjs_dir / "dist" / f
-            dest = staticdir / Path(f).name
+        def _copy_to_staticdir(source: Path, dest: Path) -> None:
+            # dest should be relative to staticdir
+            staticdir = (Path(app.builder.outdir) / "_static").resolve()
+            static_dest = staticdir / dest
+            ensuredir(static_dest.parent)
             try:
-                copyfile(str(source), str(dest))
+                copyfile(str(source), str(static_dest))
             except OSError:
                 logger.warning(f"Cannot copy file {source} to {dest}")
 
+        # Collect required Revealjs files. Each tuple in revealjs_files is (source, dest)
+        revealjs_dist_dir = revealjs_dir / "dist"
+        revealjs_files = [
+            (revealjs_dist_dir / "reset.css", "reset.css"),
+            (revealjs_dist_dir / "reveal.css", "reveal.css"),
+            (revealjs_dist_dir / "reveal.esm.js", "reveal.esm.js"),
+            (revealjs_dist_dir / "reveal.esm.js.map", "reveal.esm.js.map"),
+            (
+                revealjs_dist_dir / "theme" / app.config.revealjs_theme,
+                app.config.revealjs_theme,
+            ),
+        ]
+
+        for source, dest in revealjs_files:
+            _copy_to_staticdir(source, dest)
+
 
 def setup(app: "Sphinx") -> dict[str, Any]:
+    """Setup the extension."""
+
     app.add_config_value("revealjs_theme", "white.css", "html")
     app.add_config_value("revealjs_html_theme", "revealjs", "html")
     app.add_config_value("revealjs_html_theme_options", {}, "html")
-    app.add_html_theme("revealjs", str(themes_dir / "revealjs"))
+
+    app.add_html_theme(
+        "revealjs",
+        str(
+            revealjs_dir.parent.parent
+            / "revealjs"  # sphinx_revealjs_slides/themes/revealjs
+        ),
+    )
+
     app.add_builder(builder.RevealjsBuilder)
+
     app.connect("builder-inited", init_builder)
     app.connect("build-finished", copy_revealjs_files)
 
@@ -72,6 +89,8 @@ def setup(app: "Sphinx") -> dict[str, Any]:
     directives.speakernote.setup(app)
     directives.newslide.setup(app)
     directives.interslide.setup(app)
+
+    revealjs_plugins.setup(app)
 
     return {
         "version": __version__,

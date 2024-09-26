@@ -4,3 +4,4 @@ exclude_patterns = ["_build"]
 html_theme = "alabaster"
 revealjs_html_theme = "revealjs"
 revealjs_theme = "black.css"
+revealjs_load_plugins = ["notes"]
