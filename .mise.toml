@@ -3,3 +3,8 @@ python = "3.12"
 
 [tasks."submodule:update"]
 run = "git submodule update --init --recursive --remote"
+
+[tasks."example:revealjs"]
+run = "sphinx-build -b revealjs -d example/_build/doctrees -n -c example -vvv example example/_build/revealjs"
+[tasks."example:html"]
+run = "sphinx-build -b html -d example/_build/doctrees -n -c example -vvv example example/_build/html"
