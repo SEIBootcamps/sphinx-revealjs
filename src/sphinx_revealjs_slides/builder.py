@@ -9,6 +9,8 @@ if TYPE_CHECKING:
 
 
 class RevealjsBuilder(StandaloneHTMLBuilder):
+    """Build Reveal.js slides."""
+
     name = "revealjs"
     search = False
 
