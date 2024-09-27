@@ -8,6 +8,7 @@ from functools import cache
 from pathlib import Path
 
 from sphinx.util.fileutil import ensuredir, copyfile
+from sphinx.util.display import progress_message
 from sphinx.util import logging
 
 from .constants import REVEALJS_PLUGINS, DEFAULT_LOAD_PLUGINS
@@ -16,7 +17,6 @@ from .._utils import get_revealjs_source_dir
 if TYPE_CHECKING:
     from typing import Any
     from sphinx.application import Sphinx
-    from docutils.nodes import document
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def validate_revealjs_load_plugins(app: "Sphinx") -> None:
             )
 
 
-def _copy_revealjs_plugin_files(plugin_name: str, app: "Sphinx") -> None:
+def _copy_revealjs_plugin(plugin_name: str, app: "Sphinx") -> None:
     # Gather plugin files
     plugin_source_dir = get_revealjs_source_dir() / "plugin" / plugin_name
     plugin_files = list(plugin_source_dir.glob("**/*"))
@@ -72,8 +72,9 @@ def copy_plugin_files(app: "Sphinx", exc) -> None:
     if app.builder.name != "revealjs" or exc:
         return
 
-    for plugin_name in app.config.revealjs_load_plugins:
-        _copy_revealjs_plugin_files(plugin_name, app)
+    with progress_message("[Reveal.js] Copying plugin files"):
+        for plugin_name in app.config.revealjs_load_plugins:
+            _copy_revealjs_plugin(plugin_name, app)
 
 
 def add_revealjs_initiation_script(

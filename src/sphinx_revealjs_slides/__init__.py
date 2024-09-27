@@ -20,22 +20,24 @@ revealjs_dir = get_revealjs_source_dir()
 
 
 def init_builder(app: "Sphinx") -> None:
+    """Called on builder-inited: setup builder and add static files."""
+
     if app.builder.name == "revealjs":
         add_revealjs_static_files(app)
-        override_nodes(app)
+        overridenodes.setup(app)
 
 
 def add_revealjs_static_files(app: "Sphinx") -> None:
+    """Register Reveal.js static files with builder."""
+
     app.add_css_file("reset.css", priority=500)
     app.add_css_file("reveal.css", priority=500)
     app.add_css_file(app.config.revealjs_theme, priority=600)
 
 
-def override_nodes(app: "Sphinx") -> None:
-    overridenodes.setup(app)
-
-
 def copy_revealjs_files(app: "Sphinx", exc) -> None:
+    """Called on builder-finished: copy Reveal.js files to the static directory."""
+
     if app.builder.name == "revealjs" and not exc:
 
         def _copy_to_staticdir(source: Path, dest: Path) -> None:
@@ -68,9 +70,20 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
 def setup(app: "Sphinx") -> dict[str, Any]:
     """Setup the extension."""
 
+    app.add_builder(builder.RevealjsBuilder)
+    app.connect("builder-inited", init_builder)
+    app.connect("build-finished", copy_revealjs_files)
+
     app.add_config_value("revealjs_theme", "white.css", "html")
     app.add_config_value("revealjs_html_theme", "revealjs", "html")
     app.add_config_value("revealjs_html_theme_options", {}, "html")
+
+    directives.incremental.setup(app)
+    directives.speakernote.setup(app)
+    directives.newslide.setup(app)
+    directives.interslide.setup(app)
+
+    revealjs_plugins.setup(app)
 
     app.add_html_theme(
         "revealjs",
@@ -79,18 +92,6 @@ def setup(app: "Sphinx") -> dict[str, Any]:
             / "revealjs"  # sphinx_revealjs_slides/themes/revealjs
         ),
     )
-
-    app.add_builder(builder.RevealjsBuilder)
-
-    app.connect("builder-inited", init_builder)
-    app.connect("build-finished", copy_revealjs_files)
-
-    directives.incremental.setup(app)
-    directives.speakernote.setup(app)
-    directives.newslide.setup(app)
-    directives.interslide.setup(app)
-
-    revealjs_plugins.setup(app)
 
     return {
         "version": __version__,
