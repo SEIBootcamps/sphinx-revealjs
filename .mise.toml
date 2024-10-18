@@ -4,7 +4,16 @@ python = "3.12"
 [tasks."submodule:update"]
 run = "git submodule update --init --recursive --remote"
 
-[tasks."example:revealjs"]
-run = "sphinx-build -b revealjs -d example/_build/doctrees -n -c example -vvv example example/_build/revealjs"
-[tasks."example:html"]
-run = "sphinx-build -b html -d example/_build/doctrees -n -c example -vvv example example/_build/html"
+[tasks.dev]
+depends = ["build"]
+run = "python -m http.server 8008 -d example/_build/revealjs -b 127.0.0.1"
+
+[tasks.build]
+run = "sphinx-build -b revealjs -a -d example/_build/doctrees -n -c example -vvv example example/_build/revealjs"
+sources = [
+  "example/*.rst",
+  "example/*.py",
+  "src/sphinx_revealjs_slides/**/*.py",
+  "src/sphinx_revealjs_slides/themes/revealjs/**/*",
+]
+outputs = ["example/_build/revealjs"]
