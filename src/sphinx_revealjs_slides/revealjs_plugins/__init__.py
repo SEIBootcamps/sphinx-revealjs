@@ -37,7 +37,7 @@ def validate_revealjs_load_plugins(app: "Sphinx") -> None:
     for plugin_name in app.config.revealjs_load_plugins:
         if plugin_name not in get_registered_plugins(app):
             app.warn(
-                f"[Reveal.js] Plugin {plugin_name} is not a registered plugin. Have you added it to the revealjs_plugins configuration value?"  # pylint: disable=line-too-long
+                f"[revealjs] Plugin {plugin_name} is not a registered plugin. Have you added it to the revealjs_plugins configuration value?"  # pylint: disable=line-too-long
             )
 
 
@@ -47,7 +47,7 @@ def _copy_revealjs_plugin(plugin_name: str, app: "Sphinx") -> None:
     plugin_files = list(plugin_source_dir.glob("**/*"))
 
     logger.debug(f"""\
-[Reveal.js] Discovered plugin {plugin_name}. Prepared to copy the following to static directory:
+[revealjs] discovered plugin {plugin_name}. Prepared to copy the following to static directory:
 {"\n".join('* ' + str(f) for f in plugin_files)}
     """)
 
@@ -60,7 +60,7 @@ def _copy_revealjs_plugin(plugin_name: str, app: "Sphinx") -> None:
             source, dest = f, dest_dir / f.name
             copyfile(source, dest)
             logger.debug(
-                f"[Reveal.js] Copied static file: {dest.relative_to(static_dir)}"
+                f"[revealjs] copied static file: {dest.relative_to(static_dir)}"
             )
     except OSError:
         logger.warning(f"Cannot copy file {source} to {dest}")
@@ -72,7 +72,7 @@ def copy_plugin_files(app: "Sphinx", exc) -> None:
     if app.builder.name != "revealjs" or exc:
         return
 
-    with progress_message("[Reveal.js] Copying plugin files"):
+    with progress_message("[revealjs] copying plugin files"):
         for plugin_name in app.config.revealjs_load_plugins:
             _copy_revealjs_plugin(plugin_name, app)
 
