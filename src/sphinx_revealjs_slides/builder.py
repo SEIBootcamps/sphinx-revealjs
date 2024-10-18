@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from sphinx.util.display import progress_message
 from sphinx.builders.html import StandaloneHTMLBuilder
 
 if TYPE_CHECKING:
