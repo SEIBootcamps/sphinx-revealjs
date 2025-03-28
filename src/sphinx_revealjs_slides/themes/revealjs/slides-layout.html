@@ -58,8 +58,17 @@
   {% block document %} {% endblock document %}
   {%- endblock body %}
 
+  <script>
+    {{ revealjs_enabled_plugin_exports }}
+  </script>
+
   {%- block initRevealjs %}
-  {{ revealjs_init_script }}
+  <script>
+    Reveal.initialize({
+      plugins: window.SphinxRevealjsPlugins,
+      {% block revealjs_options %}{% endblock revealjs_options %}
+    });
+  </script>
   {%- endblock initRevealjs %}
 
   {%- block beforeend_body %}

@@ -21,11 +21,25 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@cache
 def get_registered_plugins(app: "Sphinx") -> dict[str, str]:
     """Merge built-in plugins with user-defined plugins from app.conf.revealjs_plugins."""
 
     return {**REVEALJS_PLUGINS, **app.config.revealjs_plugins}
+
+
+def get_path_to_plugin_entrypoint(plugins: dict[str, str], plugin_name: str) -> Path:
+    """Get the path to the plugin entrypoint."""
+
+    # Get the path to the plugin entrypoint
+    if plugin_name not in plugins:
+        raise ValueError(f"Plugin {plugin_name} not found in registered plugins.")
+
+    plugin_dir, plugin_entrypoint = (
+        plugins[plugin_name]["plugin_dir"],
+        plugins[plugin_name]["plugin_entrypoint"],
+    )
+
+    return Path(plugin_dir) / plugin_entrypoint
 
 
 def validate_revealjs_load_plugins(app: "Sphinx") -> None:
@@ -41,29 +55,20 @@ def validate_revealjs_load_plugins(app: "Sphinx") -> None:
             )
 
 
-def _copy_revealjs_plugin(plugin_name: str, app: "Sphinx") -> None:
-    # Gather plugin files
-    plugin_source_dir = get_revealjs_source_dir() / "plugin" / plugin_name
-    plugin_files = list(plugin_source_dir.glob("**/*"))
+def add_revealjs_plugin_files(app: "Sphinx") -> None:
+    """Register plugin files with builder."""
 
-    logger.debug(f"""\
-[revealjs] discovered plugin {plugin_name}. Prepared to copy the following to static directory:
-{"\n".join('* ' + str(f) for f in plugin_files)}
-    """)
+    if app.builder.name != "revealjs":
+        return
 
-    # Copy to static/plugin directory
-    static_dir = Path(app.builder.outdir) / "_static"
-    dest_dir = static_dir / "plugin" / plugin_name
-    ensuredir(dest_dir)
-    try:
-        for f in plugin_files:
-            source, dest = f, dest_dir / f.name
-            copyfile(source, dest)
-            logger.debug(
-                f"[revealjs] copied static file: {dest.relative_to(static_dir)}"
-            )
-    except OSError:
-        logger.warning(f"Cannot copy file {source} to {dest}")
+    validate_revealjs_load_plugins(app)
+
+    plugins = get_registered_plugins(app)
+    for plugin_name in app.config.revealjs_load_plugins:
+        if plugin_name in plugins:
+            script_path = get_path_to_plugin_entrypoint(plugins, plugin_name)
+            logger.debug(f"[revealjs] loading plugin {plugin_name} from {script_path}")
+            app.add_js_file(str(script_path), priority=510)
 
 
 def copy_plugin_files(app: "Sphinx", exc) -> None:
@@ -72,12 +77,31 @@ def copy_plugin_files(app: "Sphinx", exc) -> None:
     if app.builder.name != "revealjs" or exc:
         return
 
+    plugins = REVEALJS_PLUGINS  # don't use user-defined plugins here
+
+    def _copy_revealjs_plugin(plugin_name: str) -> None:
+        if plugin_name not in plugins:
+            return
+
+        plugin_dir = plugins[plugin_name]["plugin_dir"]
+        plugin_src_dir = get_revealjs_source_dir() / plugin_dir
+        plugin_dest_dir = Path(app.builder.outdir) / "_static" / plugin_dir
+        ensuredir(plugin_dest_dir)
+        try:
+            for f in plugin_src_dir.glob("**/*"):
+                copyfile(f, plugin_dest_dir / f.name)
+                logger.debug(
+                    f"[revealjs] copied static file: {(plugin_dest_dir / f.name).relative_to(Path(app.builder.outdir) / '_static')}"  # pylint: disable=line-too-long
+                )
+        except OSError:
+            logger.warning(f"Cannot copy file {f} to {plugin_dest_dir / f.name}")
+
     with progress_message("[revealjs] copying plugin files"):
         for plugin_name in app.config.revealjs_load_plugins:
-            _copy_revealjs_plugin(plugin_name, app)
+            _copy_revealjs_plugin(plugin_name)
 
 
-def add_revealjs_initiation_script(
+def add_revealjs_plugins_to_html_context(
     app: "Sphinx",
     pagename: str,
     _,
@@ -92,31 +116,20 @@ def add_revealjs_initiation_script(
         return
 
     plugins = get_registered_plugins(app)
-    dynamic_imports = [
-        f"import('./_static/plugin/{plugins[plugin_name]}')"
+    plugin_exports = [
+        plugins[plugin_name]["plugin_export"]
         for plugin_name in app.config.revealjs_load_plugins
         if plugin_name in plugins
     ]
+    plugin_window_exports = [f"window.{name}" for name in plugin_exports]
 
-    script = f"""\
-<script type="module">
-  import Reveal from './_static/reveal.esm.js';
-
-  Promise.all([{",".join(dynamic_imports)}])
-    .then((modules) => {"{"}
-      Reveal.initialize({"{"}
-        slideNumber: "c/t",
-        showSlideNumber: "print",
-        hashOneBasedIndex: true,
-        hash: true,
-        plugins: modules.map((m) => m.default),
-      {"}"});
-    {"}"});
-</script>
-    """
+    # This is a terrible, hacky way of doing things but it'll work for now...
+    enabled_plugins_js = (
+        f"window.SphinxRevealjsPlugins = {', '.join(plugin_window_exports)};"
+    )
 
     # Update context
-    context["revealjs_init_script"] = script
+    context["revealjs_enabled_plugin_exports"] = enabled_plugins_js
 
 
 def setup(app: "Sphinx") -> None:
@@ -129,8 +142,9 @@ def setup(app: "Sphinx") -> None:
 
     app.add_config_value("revealjs_load_plugins", DEFAULT_LOAD_PLUGINS, "html")
 
+    app.connect("builder-inited", add_revealjs_plugin_files)
     app.connect("build-finished", copy_plugin_files)
 
     # On html-page-context, add the plugin entry points to the page.
     # html-page-context(app, pagename, templatename, context, doctree)
-    app.connect("html-page-context", add_revealjs_initiation_script)
+    app.connect("html-page-context", add_revealjs_plugins_to_html_context)

@@ -32,6 +32,8 @@ def add_revealjs_static_files(app: "Sphinx") -> None:
 
     app.add_css_file("reset.css", priority=500)
     app.add_css_file("reveal.css", priority=500)
+    app.add_js_file("reveal.js", priority=500)
+    # app.add_js_file("reveal.esm.js", priority=500)
     app.add_css_file(app.config.revealjs_theme, priority=600)
 
 
@@ -56,6 +58,7 @@ def copy_revealjs_files(app: "Sphinx", exc) -> None:
             (revealjs_dist_dir / "reset.css", "reset.css"),
             (revealjs_dist_dir / "reveal.css", "reveal.css"),
             (revealjs_dist_dir / "reveal.esm.js", "reveal.esm.js"),
+            (revealjs_dist_dir / "reveal.js", "reveal.js"),
             (revealjs_dist_dir / "reveal.esm.js.map", "reveal.esm.js.map"),
             (
                 revealjs_dist_dir / "theme" / app.config.revealjs_theme,
