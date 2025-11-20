@@ -1,27 +1,23 @@
-[tool.poetry]
+[project]
 name = "sphinx-revealjs-slides"
-version = "0.3.0"
-description = ""
-authors = ["Ashley Trinh <ashley@hackbrightacademy.com>"]
+version = "0.1.0"
+description = "Sphinx extensions and a theme for creating Reveal.js slides"
+authors = [
+    "Ashley Trinh <ashley.trinh@hackbrightacademy.com>"
+]
 readme = "README.md"
-packages = [{ include = "sphinx_revealjs_slides", from = "src" }]
+requires-python = ">=3.12,<4"
+packages = [
+    { include = "sphinx_revealjs_slides", from = "src" }
+]
+dependencies = [
+    "sphinx>=6, <8"
+]
 
-[tool.poetry.dependencies]
-python = ">=3.9, <4.0"
-sphinx = ">=6, <8"
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.1.1"
-black = "^23.1.0"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^7.2.2"
-
-[tool.poetry.group.buildlocal]
-optional = true
-
-[tool.poetry.group.buildlocal.dependencies]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "mypy",
+    "ruff",
+    "pytest",
+    "pre-commit",
+]
