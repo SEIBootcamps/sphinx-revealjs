@@ -6,3 +6,4 @@ _build
 __pycache__
 .tool-versions
 !src/sphinx_revealjs_slides/themes/lib/reveal.js/dist/
+node_modules

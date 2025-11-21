@@ -1,0 +1,19 @@
+{
+  "name": "sphinx-revealjs-theme",
+  "version": "1.0.0",
+  "description": "Creates Sphinx theme files for sphinx_revealjs_slides.",
+  "main": "index.js",
+  "type": "module",
+  "repository": "https://github.com/SEIBootcamps/sphinx-revealjs.git",
+  "author": "Ashley Trinh <atrnh@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
+  },
+  "dependencies": {
+    "reveal.js": "^5.2.1"
+  }
+}

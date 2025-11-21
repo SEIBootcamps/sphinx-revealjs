@@ -3,7 +3,7 @@ name = "sphinx-revealjs-slides"
 version = "0.1.0"
 description = "Sphinx extensions and a theme for creating Reveal.js slides"
 authors = [
-    "Ashley Trinh <ashley.trinh@hackbrightacademy.com>"
+    "Ashley Trinh <atrnh@users.noreply.github.com>"
 ]
 readme = "README.md"
 requires-python = ">=3.12,<4"
