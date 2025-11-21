@@ -13,7 +13,7 @@ const entryPoints = {
 };
 
 // Generate output configuration for JS files
-function createJsConfig(input, index) {
+function createJsConfig(input) {
   const name = basename(input, extname(input));
   return {
     input,
@@ -26,7 +26,7 @@ function createJsConfig(input, index) {
 }
 
 // Generate output configuration for CSS files
-function createCssConfig(input, index) {
+function createCssConfig(input) {
   const name = basename(input, extname(input));
   return {
     input,
