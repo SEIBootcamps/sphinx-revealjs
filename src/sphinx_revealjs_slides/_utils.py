@@ -5,19 +5,25 @@ from pathlib import Path
 
 
 @cache
+def get_revealjs_theme_dir() -> "Path":
+    """Get path to Reveal.js theme directory."""
+
+    package_dir = Path(__file__).parent.resolve()
+    return package_dir / "theme" / "revealjs"
+
+
+@cache
 def get_revealjs_static_dir() -> "Path":
     """Get path to Reveal.js static directory (contains dist files)."""
 
-    package_dir = Path(__file__).parent.resolve()
-    return package_dir / "theme" / "revealjs" / "static"
+    return get_revealjs_theme_dir() / "static"
 
 
 @cache
 def get_revealjs_plugin_dir() -> "Path":
     """Get path to Reveal.js plugin directory."""
 
-    package_dir = Path(__file__).parent.resolve()
-    return package_dir / "theme" / "revealjs" / "plugin"
+    return get_revealjs_theme_dir() / "plugin"
 
 
 @cache

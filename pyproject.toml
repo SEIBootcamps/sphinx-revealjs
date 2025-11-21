@@ -38,3 +38,4 @@ ensured-targets = [
 [tool.hatch.build.targets.wheel.shared-data]
 "src/sphinx_revealjs_slides/theme/revealjs/static" = "share/sphinx_revealjs_slides/theme/revealjs/static"
 "src/sphinx_revealjs_slides/theme/revealjs/plugin" = "share/sphinx_revealjs_slides/theme/revealjs/plugin"
+# TODO: should include revealjs theme files too
