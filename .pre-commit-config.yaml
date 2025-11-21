@@ -19,7 +19,7 @@ repos:
     hooks:
     - id: ruff-format
       name: ruff format
-      entry: ruff format --force-exclude
+      entry: uv run ruff format --force-exclude
       language: unsupported
       types: [python]
       args: []

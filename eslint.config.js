@@ -8,15 +8,15 @@ export default defineConfig([
     files: ["**/*.{js,mjs,cjs}"],
     plugins: {
       js,
-      stylistic
+      "@stylistic": stylistic,
     },
     extends: ["js/recommended"],
     languageOptions: { globals: globals.browser },
+    rules: {
+      // use double quotes
+      quotes: ["error", "double"],
+      // use semicolons
+      semi: ["error", "always"],
+    },
   },
-  stylistic.configs.customize([
-    {
-      quotes: "double",
-      semi: "always",
-    }
-  ])
 ]);

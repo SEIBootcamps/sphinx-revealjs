@@ -3,7 +3,7 @@ name = "sphinx-revealjs-slides"
 version = "0.1.0"
 description = "Sphinx extensions and a theme for creating Reveal.js slides"
 authors = [
-    "Ashley Trinh <atrnh@users.noreply.github.com>"
+    { name = "Ashley Trinh", email = "atrnh@users.noreply.github.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.12,<4"
@@ -21,3 +21,20 @@ dev = [
     "pytest",
     "pre-commit",
 ]
+
+[build-system]
+requires = ["hatchling", "hatch-jupyter-builder>=0.5"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = ["hatch-jupyter-builder>=0.5"]
+build-function = "hatch_jupyter_builder.utils.npm_builder"
+build-kwargs = { path = ".", build_cmd = "build" }
+ensured-targets = [
+    "src/sphinx_revealjs_slides/theme/revealjs/static",
+    "src/sphinx_revealjs_slides/theme/revealjs/plugin",
+]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"src/sphinx_revealjs_slides/theme/revealjs/static" = "share/sphinx_revealjs_slides/theme/revealjs/static"
+"src/sphinx_revealjs_slides/theme/revealjs/plugin" = "share/sphinx_revealjs_slides/theme/revealjs/plugin"

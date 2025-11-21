@@ -12,7 +12,7 @@ from sphinx.util.display import progress_message
 from sphinx.util import logging
 
 from .constants import REVEALJS_PLUGINS, DEFAULT_LOAD_PLUGINS
-from .._utils import get_revealjs_source_dir
+from .._utils import get_revealjs_plugin_dir
 
 if TYPE_CHECKING:
     from typing import Any
@@ -84,17 +84,25 @@ def copy_plugin_files(app: "Sphinx", exc) -> None:
             return
 
         plugin_dir = plugins[plugin_name]["plugin_dir"]
-        plugin_src_dir = get_revealjs_source_dir() / plugin_dir
+        # plugin_dir is like "plugin/highlight", so we extract just the subdirectory name
+        # plugin_subdir would be "highlight"
+        plugin_subdir = Path(plugin_dir).name
+        plugin_src_dir = get_revealjs_plugin_dir() / plugin_subdir
         plugin_dest_dir = Path(app.builder.outdir) / "_static" / plugin_dir
         ensuredir(plugin_dest_dir)
         try:
-            for f in plugin_src_dir.glob("**/*"):
-                copyfile(f, plugin_dest_dir / f.name)
-                logger.debug(
-                    f"[revealjs] copied static file: {(plugin_dest_dir / f.name).relative_to(Path(app.builder.outdir) / '_static')}"  # pylint: disable=line-too-long
-                )
-        except OSError:
-            logger.warning(f"Cannot copy file {f} to {plugin_dest_dir / f.name}")
+            for f in plugin_src_dir.rglob("*"):
+                if f.is_file():
+                    # Preserve directory structure relative to plugin subdirectory
+                    rel_path = f.relative_to(plugin_src_dir)
+                    dest_file = plugin_dest_dir / rel_path
+                    ensuredir(dest_file.parent)
+                    copyfile(f, dest_file)
+                    logger.debug(
+                        f"[revealjs] copied static file: {dest_file.relative_to(Path(app.builder.outdir) / '_static')}"  # pylint: disable=line-too-long
+                    )
+        except OSError as e:
+            logger.warning(f"Cannot copy plugin file: {e}")
 
     with progress_message("[revealjs] copying plugin files"):
         for plugin_name in app.config.revealjs_load_plugins:

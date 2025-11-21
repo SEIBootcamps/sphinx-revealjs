@@ -9,11 +9,23 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
     "@stylistic/eslint-plugin": "^5.6.1",
     "eslint": "^9.39.1",
-    "globals": "^16.5.0"
+    "globals": "^16.5.0",
+    "postcss": "^8.5.6",
+    "rollup": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.0"
   },
   "dependencies": {
     "reveal.js": "^5.2.1"
+  },
+  "scripts": {
+    "build:rollup": "rollup -c",
+    "build:copy-revealjs": "npm run copy:plugins && npm run copy:dist",
+    "copy:plugins": "mkdir -p src/sphinx_revealjs_slides/theme/revealjs/plugin && cp -r node_modules/reveal.js/plugin/* src/sphinx_revealjs_slides/theme/revealjs/plugin/",
+    "copy:dist": "mkdir -p src/sphinx_revealjs_slides/theme/revealjs/static && cp node_modules/reveal.js/dist/*.css node_modules/reveal.js/dist/*.js node_modules/reveal.js/dist/*.map src/sphinx_revealjs_slides/theme/revealjs/static/",
+    "build": "npm run build:rollup && npm run build:copy-revealjs"
   }
 }
